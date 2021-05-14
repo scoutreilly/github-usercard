@@ -4,6 +4,7 @@
     https://api.github.com/users/<your name>
 */
 
+import axios from 'axios';
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -11,6 +12,57 @@
 
     Skip to STEP 3.
 */
+
+function cardMaker (dataObject) {
+  let cardDiv = document.createElement('div');
+  cardDiv.classList.add('card');
+  let userImage = document.createElement('img');
+  userImage.src = dataObject.avatar_url;
+  let cardInfoDiv = document.createElement('div');
+  cardInfoDiv.classList.add('card-info');
+  let usersName = document.createElement('h3');
+  usersName.classList.add('name');
+  usersName.innerText = dataObject.name;
+  let username = document.createElement('p');
+  username.classList.add('username');
+  username.innerText = dataObject.login;
+  let location = document.createElement('p');
+  location.innerText = dataObject.location;
+  let profile = document.createElement('p');
+  profile.setAttribute('href', dataObject.html_url);
+  profile.innerText = dataObject.html_url;
+  let followers = document.createElement('p');
+  followers.innerText = dataObject.followers;
+  let following = document.createElement('p');
+  following.innerText = dataObject.following;
+  let bio = document.createElement('p');
+  bio.innerText = dataObject.bio;
+
+// console.log(myInfo);
+
+  cardDiv.appendChild(userImage);
+  cardDiv.appendChild(cardInfoDiv);
+  cardInfoDiv.appendChild(usersName);
+  cardInfoDiv.appendChild(username);
+  cardInfoDiv.appendChild(location);
+  cardInfoDiv.appendChild(profile);
+  cardInfoDiv.appendChild(followers);
+  cardInfoDiv.appendChild(following);
+  cardInfoDiv.appendChild(bio);
+
+  return cardDiv
+
+}
+
+let myInfo = '';
+const cardsDiv = document.querySelector('.cards');
+axios.get('https://api.github.com/users/scoutreilly')
+  .then((response) =>{
+    myInfo = response.data;
+    // console.log(myInfo);
+    cardsDiv.appendChild(cardMaker(myInfo));
+    });
+
 
 /*
   STEP 4: Pass the data received from Github into your function,
@@ -28,7 +80,16 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+let theirInfo = '';
+followersArray.forEach (user => {
+  axios.get(`https://api.github.com/users/${user}`)
+  .then((response) =>{
+    theirInfo = response.data;
+    console.log(theirInfo);
+    cardsDiv.appendChild(cardMaker(theirInfo));
+    });
+});
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
