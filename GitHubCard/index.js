@@ -4,6 +4,16 @@
     https://api.github.com/users/<your name>
 */
 
+import axios from 'axios'
+
+// fetch('https://api.github.com/users/scoutreilly') 
+// .then(response => response.json())
+// .then(data=> console.log(data));
+let gitCardParent = document.querySelector('.cards');
+axios 
+.get('https://api.github.com/users/scoutreilly')
+.then(response => gitCardParent.appendChild(gitCards(response.data)))
+
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -28,7 +38,12 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['bgoonz', 'joshbeitler', 'justsml', 'luishrd', 'bigknell'];
+followersArray.forEach(user => {
+  axios
+  .get(`https://api.github.com/users/${user}`)
+  .then(response => gitCardParent.appendChild(gitCards(response.data)))
+});
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +64,55 @@ const followersArray = [];
       </div>
     </div>
 */
+
+function gitCards(obj) {
+  const cardDiv = document.createElement('div');
+  cardDiv.classList.add('card');
+
+  let userImg = document.createElement('img');
+  userImg.src = obj.avatar_url;
+  cardDiv.appendChild(userImg);
+
+  let cardInfo = document.createElement('div');
+  cardInfo.classList.add('card-info');
+  cardDiv.appendChild(cardInfo);
+
+  let userName = document.createElement('h3');
+  userName.classList.add('name');
+  userName.textContent = obj.name;
+  cardInfo.appendChild(userName);
+
+  let userTag = document.createElement('p');
+  userTag.classList.add('username');
+  userTag.textContent = obj.login;
+  cardInfo.appendChild(userTag);
+
+  let location = document.createElement('p');
+  location.textContent = `Location: ${obj.location}`;
+  cardInfo.appendChild(location);
+
+  let profileLink = document.createElement('p');
+  let aTag = document.createElement('a');
+  profileLink.textContent = 'Profile: ';
+  aTag.href = obj.html_url;
+  aTag.textContent = obj.html_url;
+  profileLink.appendChild(aTag);
+  cardInfo.appendChild(profileLink);
+
+  let followers = document.createElement('p');
+  followers.textContent = `Followers: ${obj.followers}`;
+  cardInfo.appendChild(followers);
+
+  let following = document.createElement('p');
+  following.textContent = `Following: ${obj.following}`;
+  cardInfo.appendChild(following);
+
+  let bio = document.createElement('p');
+  bio.textContent = `Bio: ${obj.bio}`;
+  cardInfo.appendChild(bio);
+
+  return cardDiv
+}
 
 /*
   List of LS Instructors Github username's:
